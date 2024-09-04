@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Http\Controllers\Api\V1;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\StoreTweetRequest;
+use App\Models\Tweet;
+use App\Traits\ApiResponses;
+use Illuminate\Http\JsonResponse;
+
+class TweetController extends Controller
+{
+    use ApiResponses;
+
+    public function store(StoreTweetRequest $request): JsonResponse
+    {
+        $validatedData = $request->validated();
+        $validatedData['user_id'] = auth()->id();
+
+        $tweet = Tweet::create($validatedData);
+
+        return $this->success('Tweet created successfully', $tweet);
+    }
+}
