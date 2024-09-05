@@ -21,6 +21,9 @@ class TimelineController extends Controller
             ->latest()
             ->paginate(10);
 
+        $tweets->each(function ($tweet) use ($user) {
+            $this->authorize('view', $tweet);
+        });
         return $this->success(__('messages.timeline_fetched_successfully'), TweetResource::collection($tweets));
     }
 }
