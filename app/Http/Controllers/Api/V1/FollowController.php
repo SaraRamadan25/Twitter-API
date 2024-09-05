@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\FollowedUser;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\FollowUserRequest;
+use App\Mail\FollowNotification;
 use App\Models\Follow;
+use App\Models\User;
 use App\Traits\ApiResponses;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Mail;
 
 class FollowController extends Controller
 {
@@ -18,7 +22,7 @@ class FollowController extends Controller
         $authenticatedUserId = auth()->id();
 
         if ($validatedData['followed_user_id'] == $authenticatedUserId) {
-            return $this->error('You cannot follow yourself.', 400);
+            return $this->error(__('messages.cannot_follow_self'), 400);
         }
 
         $validatedData['user_id'] = $authenticatedUserId;
@@ -28,11 +32,15 @@ class FollowController extends Controller
             ->first();
 
         if ($existingFollow) {
-            return $this->error('You are already following this user.', 400);
+            return $this->error(__('messages.already_following'), 400);
         }
 
         $follow = Follow::create($validatedData);
 
-        return $this->success('User followed successfully', $follow);
-    }
-}
+        $followedUser = User::find($validatedData['followed_user_id']);
+        Mail::to($followedUser->email)->send(new FollowNotification(auth()->user()));
+
+        event(new FollowedUser(auth()->user(), $validatedData['followed_user_id']));
+
+        return $this->success(__('messages.user_followed'), $follow);
+    }}
