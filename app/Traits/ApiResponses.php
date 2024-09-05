@@ -12,11 +12,16 @@ trait ApiResponses {
 
     protected function success($message, $data = [], $statusCode = 200): JsonResponse
     {
-        return response()->json([
-            'data' => $data,
+        $response = [
             'message' => $message,
             'status' => $statusCode
-        ], $statusCode);
+        ];
+
+        if (!empty($data)) {
+            $response['data'] = $data;
+        }
+
+        return response()->json($response, $statusCode);
     }
 
     protected function error($message, $statusCode): JsonResponse

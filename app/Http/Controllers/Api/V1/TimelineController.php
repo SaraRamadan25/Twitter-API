@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\V1\TweetResource;
 use App\Models\Tweet;
 use App\Traits\ApiResponses;
 use Illuminate\Http\JsonResponse;
@@ -20,6 +21,6 @@ class TimelineController extends Controller
             ->latest()
             ->paginate(10);
 
-        return $this->success('Timeline fetched successfully', $tweets);
+        return $this->success(__('messages.timeline_fetched_successfully'), TweetResource::collection($tweets));
     }
 }

@@ -48,7 +48,6 @@ class AuthController extends Controller
             'image' => $request->hasFile('image') ? $request->file('image')->store('images', 'public') : null,        ]);
 
         return $this->ok('User registered successfully', [
-            'user' => $user,
             'token' => $user->createToken('API token for ' . $user->email)->plainTextToken,
         ]);
     }

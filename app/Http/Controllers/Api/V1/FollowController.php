@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Events\FollowedUser;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\FollowUserRequest;
+use App\Http\Resources\V1\FollowResource;
 use App\Mail\FollowNotification;
 use App\Models\Follow;
 use App\Models\User;
@@ -27,11 +28,7 @@ class FollowController extends Controller
 
         $validatedData['user_id'] = $authenticatedUserId;
 
-        $existingFollow = Follow::where('user_id', $authenticatedUserId)
-            ->where('followed_user_id', $validatedData['followed_user_id'])
-            ->first();
-
-        if ($existingFollow) {
+        if (Follow::isAlreadyFollowing($authenticatedUserId, $validatedData['followed_user_id'])) {
             return $this->error(__('messages.already_following'), 400);
         }
 
@@ -42,5 +39,7 @@ class FollowController extends Controller
 
         event(new FollowedUser(auth()->user(), $validatedData['followed_user_id']));
 
-        return $this->success(__('messages.user_followed'), $follow);
-    }}
+        return $this->success(__('messages.user_followed'));
+    }
+
+}

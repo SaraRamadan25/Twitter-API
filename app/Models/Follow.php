@@ -20,4 +20,11 @@ class Follow extends Model
     {
         return $this->belongsTo(User::class, 'followed_user_id');
     }
+
+    public static function isAlreadyFollowing(int $userId, int $followedUserId): bool
+    {
+        return self::where('user_id', $userId)
+            ->where('followed_user_id', $followedUserId)
+            ->exists();
+    }
 }

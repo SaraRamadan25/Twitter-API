@@ -19,6 +19,6 @@ class TweetController extends Controller
 
         $tweet = Tweet::create($validatedData);
 
-        return $this->success('Tweet created successfully', $tweet);
+        return $this->success(__('messages.tweet_created_successfully'));
     }
 }

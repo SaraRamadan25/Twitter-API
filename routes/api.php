@@ -18,19 +18,7 @@ use Illuminate\Support\Facades\Session;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
-Route::get('lang/{locale}', function ($locale) {
-    if (!in_array($locale, ['en', 'ar'])) {
-        abort(400);
-    }
-    Session::put('locale', $locale);
-    return redirect()->back();
-});
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
 
