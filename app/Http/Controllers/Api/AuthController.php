@@ -15,7 +15,20 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     use ApiResponses;
+    public function register(RegisterUserRequest $request): JsonResponse
+    {
+        $validated = $request->validated();
 
+        $user = User::create([
+            'email' => $validated['email'],
+            'username' => $validated['username'],
+            'password' => Hash::make($validated['password']),
+            'image' => $request->hasFile('image') ? $request->file('image')->store('images', 'public') : null,        ]);
+
+        return $this->ok('User registered successfully', [
+            'token' => $user->createToken('API token for ' . $user->email)->plainTextToken,
+        ]);
+    }
     public function login(LoginUserRequest $request): JsonResponse
     {
         $request->validated($request->all());
@@ -36,22 +49,6 @@ class AuthController extends Controller
             ]
         );
     }
-
-    public function register(RegisterUserRequest $request): JsonResponse
-    {
-        $validated = $request->validated();
-
-        $user = User::create([
-            'email' => $validated['email'],
-            'username' => $validated['username'],
-            'password' => Hash::make($validated['password']),
-            'image' => $request->hasFile('image') ? $request->file('image')->store('images', 'public') : null,        ]);
-
-        return $this->ok('User registered successfully', [
-            'token' => $user->createToken('API token for ' . $user->email)->plainTextToken,
-        ]);
-    }
-
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();

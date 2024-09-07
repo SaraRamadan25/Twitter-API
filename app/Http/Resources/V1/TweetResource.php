@@ -21,6 +21,7 @@ class TweetResource extends JsonResource
                 'content' => $this->text,
                 'user_id' => $this->user_id,
             ],
+
             'links' => [
             ]
         ];

@@ -20,7 +20,6 @@ class FollowResource extends JsonResource
             'attributes' => [
                 'followed_user_id' => $this->followed_user_id,
                 'user_id' => $this->user_id,
-
             ],
             'links' => [
             ]

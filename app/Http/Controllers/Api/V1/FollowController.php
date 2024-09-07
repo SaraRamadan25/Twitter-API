@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Events\FollowedUser;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\FollowUserRequest;
-use App\Http\Resources\V1\FollowResource;
+use App\Http\Requests\Api\V1\FollowUserRequest;
 use App\Mail\FollowNotification;
 use App\Models\Follow;
 use App\Models\User;
